@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 import CheckoutForm from "./CheckoutForm";
 import "../Stripe.css";
 import { selectCurrentOrder } from "../features/order/orderSlice";
+import { API_BASE_URL } from "../app/constants";
 
 // Make sure to call loadStripe outside of a component’s render to avoid
 // recreating the Stripe object on every render.
@@ -18,7 +19,7 @@ export default function StripeCheckout() {
 
   useEffect(() => {
     // Create PaymentIntent as soon as the page loads
-    fetch("/create-payment-intent", {
+    fetch(API_BASE_URL + "/create-payment-intent", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ totalAmount: currentOrder.totalAmount, orderId:currentOrder.id }),
