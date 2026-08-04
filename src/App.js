@@ -42,11 +42,7 @@ const options = {
 const router = createBrowserRouter([
   {
     path: '/',
-    element: (
-      <Protected>
-        <Home></Home>
-      </Protected>
-    ),
+    element: <Home></Home>,
   },
   {
     path: '/admin',
@@ -66,27 +62,15 @@ const router = createBrowserRouter([
   },
   {
     path: '/cart',
-    element: (
-      <Protected>
-        <CartPage></CartPage>
-      </Protected>
-    ),
+    element: <CartPage></CartPage>,
   },
   {
     path: '/checkout',
-    element: (
-      <Protected>
-        <Checkout></Checkout>
-      </Protected>
-    ),
+    element: <Checkout></Checkout>,
   },
   {
     path: '/product-detail/:id',
-    element: (
-      <Protected>
-        <ProductDetailPage></ProductDetailPage>
-      </Protected>
-    ),
+    element: <ProductDetailPage></ProductDetailPage>,
   },
   {
     path: '/admin/product-detail/:id',
@@ -122,11 +106,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/order-success/:id',
-    element: (
-      <Protected>
-        <OrderSuccessPage></OrderSuccessPage>{' '}
-      </Protected>
-    ),
+    element: <OrderSuccessPage></OrderSuccessPage>,
   },
   {
     path: '/my-orders',
@@ -146,11 +126,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/stripe-checkout/',
-    element: (
-      <Protected>
-        <StripeCheckout></StripeCheckout>
-      </Protected>
-    ),
+    element: <StripeCheckout></StripeCheckout>,
   },
   {
     path: '/logout',
@@ -184,8 +160,10 @@ function App() {
       dispatch(fetchItemsByUserIdAsync());
       // we can get req.user by token on backend so no need to give in front-end
       dispatch(fetchLoggedInUserAsync());
+    } else if (userChecked) {
+      dispatch(fetchItemsByUserIdAsync());
     }
-  }, [dispatch, user]);
+  }, [dispatch, user, userChecked]);
 
   return (
     <>

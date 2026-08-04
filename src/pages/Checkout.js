@@ -39,6 +39,7 @@ function Checkout() {
 
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState(null);
+  const [guestAddress, setGuestAddress] = useState(null);
 
   const handleQuantity = (e, item) => {
     dispatch(updateCartAsync({ id: item.id, quantity: +e.target.value }));
@@ -50,7 +51,9 @@ function Checkout() {
 
   const handleAddress = (e) => {
     console.log(e.target.value);
-    setSelectedAddress(user.addresses[e.target.value]);
+    if (user && user.addresses) {
+      setSelectedAddress(user.addresses[e.target.value]);
+    }
   };
 
   const handlePayment = (e) => {
@@ -64,7 +67,7 @@ function Checkout() {
         items,
         totalAmount,
         totalItems,
-        user: user.id,
+        user: user ? user.id : (selectedAddress.email || 'guest'),
         paymentMethod,
         selectedAddress,
         status: 'pending', // other status can be delivered, received.
@@ -110,12 +113,17 @@ function Checkout() {
               noValidate
               onSubmit={handleSubmit((data) => {
                 console.log(data);
-                dispatch(
-                  updateUserAsync({
-                    ...user,
-                    addresses: [...user.addresses, data],
-                  })
-                );
+                if (user) {
+                  dispatch(
+                    updateUserAsync({
+                      ...user,
+                      addresses: [...user.addresses, data],
+                    })
+                  );
+                } else {
+                  setGuestAddress(data);
+                  setSelectedAddress(data);
+                }
                 reset();
               })}
             >
@@ -308,51 +316,77 @@ function Checkout() {
                 </div>
               </div>
             </form>
-            <div className="border-b border-gray-900/10 pb-12">
-              <h2 className="text-base font-semibold leading-7 text-gray-900">
-                Addresses
-              </h2>
-              <p className="mt-1 text-sm leading-6 text-gray-600">
-                Choose from Existing addresses
-              </p>
-              <ul>
-                {user.addresses.map((address, index) => (
-                  <li
-                    key={index}
-                    className="flex justify-between gap-x-6 px-5 py-5 border-solid border-2 border-gray-200"
-                  >
-                    <div className="flex gap-x-4">
-                      <input
-                        onChange={handleAddress}
-                        name="address"
-                        type="radio"
-                        value={index}
-                        className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                      />
-                      <div className="min-w-0 flex-auto">
-                        <p className="text-sm font-semibold leading-6 text-gray-900">
-                          {address.name}
+            {user && user.addresses && user.addresses.length > 0 && (
+              <div className="border-b border-gray-900/10 pb-12">
+                <h2 className="text-base font-semibold leading-7 text-gray-900">
+                  Addresses
+                </h2>
+                <p className="mt-1 text-sm leading-6 text-gray-600">
+                  Choose from Existing addresses
+                </p>
+                <ul>
+                  {user.addresses.map((address, index) => (
+                    <li
+                      key={index}
+                      className="flex justify-between gap-x-6 px-5 py-5 border-solid border-2 border-gray-200"
+                    >
+                      <div className="flex gap-x-4">
+                        <input
+                          onChange={handleAddress}
+                          name="address"
+                          type="radio"
+                          value={index}
+                          className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                        />
+                        <div className="min-w-0 flex-auto">
+                          <p className="text-sm font-semibold leading-6 text-gray-900">
+                            {address.name}
+                          </p>
+                          <p className="mt-1 truncate text-xs leading-5 text-gray-500">
+                            {address.street}
+                          </p>
+                          <p className="mt-1 truncate text-xs leading-5 text-gray-500">
+                            {address.pinCode}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="hidden sm:flex sm:flex-col sm:items-end">
+                        <p className="text-sm leading-6 text-gray-900">
+                          Phone: {address.phone}
                         </p>
-                        <p className="mt-1 truncate text-xs leading-5 text-gray-500">
-                          {address.street}
-                        </p>
-                        <p className="mt-1 truncate text-xs leading-5 text-gray-500">
-                          {address.pinCode}
+                        <p className="text-sm leading-6 text-gray-500">
+                          {address.city}
                         </p>
                       </div>
-                    </div>
-                    <div className="hidden sm:flex sm:flex-col sm:items-end">
-                      <p className="text-sm leading-6 text-gray-900">
-                        Phone: {address.phone}
-                      </p>
-                      <p className="text-sm leading-6 text-gray-500">
-                        {address.city}
-                      </p>
-                    </div>
-                  </li>
-                ))}
-              </ul>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
 
+            {guestAddress && (
+              <div className="border-b border-gray-900/10 pb-12 mt-6">
+                <h2 className="text-base font-semibold leading-7 text-gray-900 text-green-600">
+                  Selected Shipping Address
+                </h2>
+                <div className="p-5 border-solid border-2 border-green-500 rounded bg-green-50 mt-2">
+                  <p className="text-sm font-semibold leading-6 text-gray-900">
+                    {guestAddress.name}
+                  </p>
+                  <p className="mt-1 truncate text-xs leading-5 text-gray-500">
+                    {guestAddress.street}, {guestAddress.city}, {guestAddress.state} - {guestAddress.pinCode}
+                  </p>
+                  <p className="mt-1 text-xs leading-5 text-gray-500">
+                    Phone: {guestAddress.phone}
+                  </p>
+                  <p className="mt-1 text-xs leading-5 text-gray-500">
+                    Email: {guestAddress.email}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            <div className="border-b border-gray-900/10 pb-12">
               <div className="mt-10 space-y-10">
                 <fieldset>
                   <legend className="text-sm font-semibold leading-6 text-gray-900">
