@@ -105,7 +105,9 @@ export default function ResetPassword() {
                   <p className="text-green-500">Password Reset</p>
                 )}
                 {error && (
-                  <p className="text-red-500">{error}</p>
+                  <p className="text-red-500">
+                    {typeof error === 'object' ? (error.message || 'An error occurred') : error}
+                  </p>
                 )}
               </div>
             </div>
