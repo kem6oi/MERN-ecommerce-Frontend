@@ -1,0 +1,40 @@
+{
+  "rewrites": [
+    {
+      "source": "/create-payment-intent",
+      "destination": "https://your-backend-api-url.com/create-payment-intent"
+    },
+    {
+      "source": "/cart/:path*",
+      "destination": "https://your-backend-api-url.com/cart/:path*"
+    },
+    {
+      "source": "/orders/:path*",
+      "destination": "https://your-backend-api-url.com/orders/:path*"
+    },
+    {
+      "source": "/users/:path*",
+      "destination": "https://your-backend-api-url.com/users/:path*"
+    },
+    {
+      "source": "/products/:path*",
+      "destination": "https://your-backend-api-url.com/products/:path*"
+    },
+    {
+      "source": "/categories/:path*",
+      "destination": "https://your-backend-api-url.com/categories/:path*"
+    },
+    {
+      "source": "/brands/:path*",
+      "destination": "https://your-backend-api-url.com/brands/:path*"
+    },
+    {
+      "source": "/auth/:path*",
+      "destination": "https://your-backend-api-url.com/auth/:path*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
